@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
-from models.blocks import ResidualBlock, BottleneckBlock # models.blocks의 정의한 블록 불러오기
+from blocks import ResidualBlock, BottleneckBlock 
+# models.blocks의 정의한 블록 불러오기
 
 
 class ResNet(nn.Module):
@@ -31,7 +32,9 @@ class ResNet(nn.Module):
                 nn.Conv2d(self.in_channels, out_channels * (4 if block == BottleneckBlock else 1), kernel_size=1, stride=stride),
                 nn.BatchNorm2d(out_channels * (4 if block == BottleneckBlock else 1)),
             )
-
+        
+        
+        layers = []
         layers = [block(self.in_channels, out_channels, stride, downsample)]
         self.in_channels = out_channels * (4 if block == BottleneckBlock else 1)
         for _ in range(1, blocks):
@@ -49,3 +52,31 @@ class ResNet(nn.Module):
         x = torch.flatten(x, 1)
         x = self.fc(x)
         return x
+      
+# ResNet 모델 생성
+def ResNet18(num_classes=100):
+    return ResNet(ResidualBlock, [2,2,2,2], num_classes=num_classes)
+
+def ResNet34(num_classes=100):
+    return ResNet(ResidualBlock, [3,4,6,3], num_classes=num_classes)
+
+def ResNet50(num_classes=100):
+    return ResNet(BottleneckBlock, [3,4,6,3], num_classes=num_classes)
+  
+def ResNet101(num_classes = 100):
+    return ResNet(BottleneckBlock, [3,4,23,3],num_classes=num_classes)
+
+def ResNet152(num_classes = 100):
+    return ResNet(BottleneckBlock, [3,8,36,3], num_classes=num_classes)
+  
+
+# ## Test
+# if __name__ == "__main__":
+#     model = ResNet34(num_classes=10)
+#     print(model)
+    
+#     # 임의의 입력 데이터 test
+#     x = torch.randn(1, 3, 224, 224) # 배치크기 1, channel 3, 224x224
+#     output = model(x)
+#     print("Output-shape", output.shape)
+    

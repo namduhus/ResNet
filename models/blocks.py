@@ -99,17 +99,17 @@ class BottleneckBlock(nn.Module):
         return out
 
 
-## Testing
+# # Testing
 # if __name__ == "__main__":
 #     import torch
-#
+
 #     # Testing ResidualBlock
 #     block = ResidualBlock(in_channels=64, out_channels=64)
 #     x = torch.randn(1, 64, 56, 56)  # Example input
 #     y = block(x)
 #     print("ResidualBlock output shape:", y.shape)
 #     # [1, 64, 56,56]
-#
+
 #     # Testing BottleneckBlock
 #     bottleneck = BottleneckBlock(in_channels=64, out_channels=64)
 #     x = torch.randn(1, 64, 56, 56)  # Example input
