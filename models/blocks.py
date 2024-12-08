@@ -51,6 +51,13 @@ class ResidualBlock(nn.Module):
 병목 구조 사용
 계산 효율성 및 성능 
 residual learning 구현
+downsample은 두 가지 역할을 수행.
+
+- Feature Map 크기 조정 (Downsampling)
+stride가 1이 아닌 경우, 입력 특성 맵(feature map)의 크기를 줄여 다음 레이어와 일치시키기 위해 사용됩니다.
+
+- 채널 수 맞추기 (Channel Matching)
+입력 채널 수(in_channels)가 출력 채널 수(out_channels * expansion)와 다를 때, 잔차 연결(skip connection)을 위해 채널 수를 맞춥니다.
 """
 
 
@@ -72,9 +79,9 @@ class BottleneckBlock(nn.Module):
         self.conv3 = nn.Conv2d(out_channels, out_channels * self.expansion, kernel_size=1, bias=False)
         self.bn3 = nn.BatchNorm2d(out_channels * self.expansion)
 
-        # Downsample Layer
-        if downsample is None and (stride != 1 or in_channels != out_channels * self.expansion):
-            self.downsample = nn.Sequential(
+        # Downsample Layer  #사용자가 직접 downsampled을 지정하지 않은경우 stride != 1 -> stride가 1이 아니면, 입력 크기와 출력 크기가 달라지므로 downsample 필요
+        if downsample is None and (stride != 1 or in_channels != out_channels * self.expansion): 
+            self.downsample = nn.Sequential( # 위 조건이 참이면 nn.Sequential을 사용해 새로운 downsample레이어를 정의
                 nn.Conv2d(in_channels, out_channels * self.expansion, kernel_size=1, stride=stride, bias=False),
                 nn.BatchNorm2d(out_channels * self.expansion)
             )
